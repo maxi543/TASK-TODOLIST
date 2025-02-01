@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>todo list</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div>
+      <form action="/todo-add" method="post">
+        <div class="form-container">
+          <label for="title">TITLE</label>
+          <input type="text" class="form-content" id="title" name="title" />
+        </div>
+
+        <div class="form-container">
+          <label for="description">DESCRIPTION</label>
+          <textarea name="description" cols="30" rows="5"></textarea>
+        </div>
+
+        <div class="form-container">
+          <label for="date">TITLE</label>
+          <input type="date" class="form-content" id="date" name="date" />
+        </div>
+        <input type="submit" value="add to todolist" />
+      </form>
+    </div>
+  </body>
+</html>

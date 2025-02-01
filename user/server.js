@@ -1,0 +1,53 @@
+const express = require("express");
+const axios = require("axios");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+
+const path = require("path");
+const routes = require("./routes");
+
+const app = express();
+const PORT = 5000;
+
+// MongoDB Connection
+mongoose
+  .connect("mongodb://127.0.0.1:27017/my-mongodb", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
+
+// View engine setup
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+// Static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// Middleware
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); // Parse JSON bodies
+app.use(cookieParser());
+app.use(
+  session({
+    secret: "save-lord",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 6000 * 60 },
+  })
+);
+
+// Routes
+app.use("", routes); // Use the routes
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});

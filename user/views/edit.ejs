@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Todo</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h1>EDIT</h1>
+    <form
+      method="POST"
+      action="/edit/<%= task._id %>"
+      onsubmit="editTask(event, this)"
+    >
+      <div class="form-container">
+        <label for="title">TITLE</label>
+        <input
+          type="text"
+          class="form-content"
+          id="title"
+          name="title"
+          value="<%= task.title %>"
+        />
+      </div>
+
+      <div class="form-container">
+        <label for="description">DESCRIPTION</label>
+        <textarea name="description" cols="30" rows="5">
+<%= task.description %></textarea
+        >
+      </div>
+
+      <div class="form-container">
+        <label for="date">DATE</label>
+        <input
+          type="date"
+          class="form-content"
+          id="date"
+          name="date"
+          value="<%= task.date.toISOString().split('T')[0] %>"
+        />
+      </div>
+
+      <input type="submit" value="Edit Todo" />
+    </form>
+    <script>
+      function editTask(event, form) {
+        event.preventDefault();
+
+        const actionUrl = form.action;
+        const title = form.querySelector("#title").value;
+        const description = form.querySelector("textarea").value;
+        const date = form.querySelector("#date").value;
+
+        fetch(actionUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: title,
+            description: description,
+            date: date,
+          }),
+        })
+          .then((response) => {
+            console.log("Edit response status:", response.status); // Log the status
+
+            if (response.ok) {
+              window.location.href = "/todo";
+            } else {
+              console.error("Failed to edit task:", response.status); // Log the status
+              return response.text().then((text) => {
+                console.error("Response Body:", text);
+                alert(
+                  `Failed to edit task, status: ${response.status}, response: ${text}`
+                ); // Alert with body
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert(`An error occurred during edit, please check the logs`);
+          });
+      }
+    </script>
+  </body>
+</html>

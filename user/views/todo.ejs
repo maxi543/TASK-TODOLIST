@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>todo list</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h1>TODO LIST FOR TODAY</h1>
+
+    <!-- Button to Add a New Task -->
+    <form action="/todo-add" method="get">
+      <input type="submit" value="ADD A TASK" />
+    </form>
+    
+    <!-- Display message if no tasks exist -->
+    <% if (tasks.length === 0) { %>
+    <p class="no-tasks">Get started by adding a task!</p>
+    <% } else { %>
+    <ul class="task-list">
+      <% tasks.forEach(task => { %>
+      <li class="task-item">
+        <span><%= task.title %></span>
+    
+        <!-- Edit Task -->
+         <form method="POST" action="/edit/<%= task._id %>" onsubmit="editTask(event, this)">
+          <input id="edit" type="submit" value="Edit" />
+        </form>
+    
+          <!-- Delete Task -->
+         <form method="POST" action="/delete/<%= task._id %>" onsubmit="deleteTask(event, this)">
+            <input id="delete" type="submit" value="Delete" />
+          </form>
+      </li>
+      <% }); %>
+    </ul>
+    <% } %>
+    
+    </body>
+    <a href="/logout">Logout</a>
+    <script>
+    function editTask(event, form) {
+        event.preventDefault(); // Prevent default form submission
+
+        const actionUrl = form.action; // Get the form action URL
+        const formElement = form.closest("li");
+        const title = formElement.querySelector("span").textContent;
+        window.location.href = "/edit/" + form.action.split("/")[4] // we need the edit endpoint, and we need to pass the ID so it redirects
+        console.log(form.action.split("/")[4])
+
+    }
+      function deleteTask(event, form) {
+        event.preventDefault(); // Prevent default form submission
+
+        const actionUrl = form.action; // Get the form action URL
+
+        // Send DELETE request
+        fetch(actionUrl, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+          .then(response => {
+            if (response.ok) {
+              window.location.href = "/todo";
+            } else {
+              console.error('Failed to delete task:', response);
+                alert("Failed to delete task, please check the logs")
+              // Handle error here.
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred during delete, please check the logs")
+
+          });
+      }
+    </script>
+  </body>
+</html>
