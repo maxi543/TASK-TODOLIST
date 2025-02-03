@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-
+require("dotenv").config();
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
@@ -14,7 +14,7 @@ const PORT = 5000;
 
 // MongoDB Connection
 mongoose
-  .connect("mongodb://127.0.0.1:27017/my-mongodb", {
+  .connect(process.env.MONGODE_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
