@@ -37,10 +37,14 @@ app.use(express.json()); // Parse JSON bodies
 app.use(cookieParser());
 app.use(
   session({
-    secret: "save-lord",
+    secret: process.env.SESSION_SECRET || "dev123",
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 6000 * 60 },
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 6000 * 60,
+    },
   })
 );
 
