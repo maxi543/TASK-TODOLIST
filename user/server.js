@@ -14,7 +14,7 @@ const PORT = 5000;
 
 // MongoDB Connection
 mongoose
-  .connect(process.env.MONGODE_URL, {
+  .connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
