@@ -8,18 +8,7 @@ const cookieParser = require("cookie-parser");
 
 const path = require("path");
 const routes = require("./routes");
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "dev123",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      maxAge: 6000 * 60 * 1000,
-    },
-  })
-);
+
 
 const app = express();
 const PORT = 5000;
@@ -48,20 +37,21 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(express.json()); // Parse JSON bodies
 app.use(cookieParser());
 app.set('trust proxy', 1); // Trust first proxy
+const isProduction = process.env.NODE_ENV === "production";
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "dev123",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true, // Only send over HTTPS
+      secure: isProduction,  // Use NODE_ENV to determine secure
       httpOnly: true,
       maxAge: 6000 * 60 * 1000,
-      sameSite: 'none' // Necessary when front end is on a different domain to backend
+      sameSite: isProduction ? 'none' : 'lax'  // Only 'none' in production with secure:true
     },
   })
 );
-
 // Routes
 app.use("", routes); // Use the routes
 
