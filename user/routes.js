@@ -22,15 +22,18 @@ router.get("/todo-add", (req, res) => {
   }
 });
 router.get("/todo", (req, res) => {
-  if (req.session.user) {
-    Todo.find({ userId: req.session.user.id }).then((data) => {
-      res.render("todo", { tasks: data, user: req.session.user });
-    }).catch((err); => { console.log("error fectiinhg todos:",err);
-                        res.status(500).send('internal server error");
-                                             });
-  } else {
-    res.redirect("/login");
-  }
+ app.get('/todo', async (req, res) => {
+    if (req.session.user) {
+        try {
+            const data = await Todo.find({ userId: req.session.user.id });
+            res.render("todo", { tasks: data, user: req.session.user });
+        } catch (err) {
+            console.error("Error fetching todos:", err);
+            res.status(500).send("Internal server error");
+        }
+    } else {
+        res.redirect("/login");
+    }
 });
 
 router.get("/logout", (req, res) => {
