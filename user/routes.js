@@ -21,19 +21,18 @@ router.get("/todo-add", (req, res) => {
     res.status(403).send("You must log in.");
   }
 });
-router.get("/todo", (req, res) => {
- app.get('/todo', async (req, res) => {
-    if (req.session.user) {
-        try {
-            const data = await Todo.find({ userId: req.session.user.id });
-            res.render("todo", { tasks: data, user: req.session.user });
-        } catch (err) {
-            console.error("Error fetching todos:", err);
-            res.status(500).send("Internal server error");
-        }
-    } else {
-        res.redirect("/login");
+router.get("/todo", async (req, res) => {
+  if (req.session.user) {
+    try {
+      const data = await Todo.find({ userId: req.session.user.id });
+      res.render("todo", { tasks: data, user: req.session.user });
+    } catch (err) {
+      console.error("Error fetching todos:", err);
+      res.status(500).send("Internal server error");
     }
+  } else {
+    res.redirect("/login");
+  }
 });
 
 router.get("/logout", (req, res) => {
