@@ -7,7 +7,8 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
 const path = require("path");
-const routes = require("./routes");app.use(
+const routes = require("./routes");
+app.use(
   session({
     secret: process.env.SESSION_SECRET || "dev123",
     resave: false,
