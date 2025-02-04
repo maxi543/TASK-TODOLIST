@@ -78,15 +78,33 @@ router.post("/api/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+      console.log("Login failed: Invalid credentials");
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
     req.session.user = { id: user._id, username: user.username };
-    console.log("login success");
+    console.log("Login successful. Session:", req.session);  // Log the session object
+    console.log("Redirecting to /todo");
     return res.redirect("/todo");
   } catch (error) {
     console.error("error during login:", error);
     return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/todo", async (req, res) => {
+  console.log("GET /todo route hit. Session:", req.session); // Log the session
+  if (req.session.user) {
+    try {
+      const data = await Todo.find({ userId: req.session.user.id });
+      res.render("todo", { tasks: data, user: req.session.user });
+    } catch (err) {
+      console.error("Error fetching todos:", err);
+      res.status(500).send("Internal server error");
+    }
+  } else {
+    console.log("User not authenticated, redirecting to /login");
+    res.redirect("/login");
   }
 });
 
