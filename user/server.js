@@ -39,11 +39,11 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || "dev123",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 6000 * 60,
+      maxAge: 6000 * 60 * 1000,
     },
   })
 );
