@@ -25,9 +25,11 @@ router.get("/todo", (req, res) => {
   if (req.session.user) {
     Todo.find({ userId: req.session.user.id }).then((data) => {
       res.render("todo", { tasks: data, user: req.session.user });
-    });
+    }).catch((err); => { console.log("error fectiinhg todos:",err);
+                        res.status(500).send('internal server error");
+                                             });
   } else {
-    res.status(403).redirect("/login");
+    res.redirect("/login");
   }
 });
 
